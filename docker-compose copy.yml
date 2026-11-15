@@ -1,0 +1,134 @@
+services:
+  kafka-1:
+    image: confluentinc/cp-kafka:7.7.1
+    hostname: kafka-1
+    container_name: kafka-1
+    ports:
+      - "19092:19092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+      KAFKA_LISTENERS: 'SSL://0.0.0.0:9092,SSL_HOST://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'SSL://kafka-1:9092,SSL_HOST://localhost:19092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:SSL,SSL:SSL,SSL_HOST:SSL'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'SSL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      # mTLS Settings
+      KAFKA_SSL_KEYSTORE_FILENAME: 'kafka-1.keystore.p12'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: 'credentials'
+      KAFKA_SSL_KEY_CREDENTIALS: 'credentials'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: 'kafka.truststore.p12'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: 'credentials'
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      # ACL / RBAC Authorizer Settings
+      KAFKA_AUTHORIZER_CLASS_NAME: 'org.apache.kafka.metadata.authorizer.StandardAuthorizer'
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
+      KAFKA_SUPER_USERS: 'User:broker;User:admin'
+      KAFKA_SSL_PRINCIPAL_MAPPING_RULES: 'RULE:^CN=([a-zA-Z0-9.-]*).*$$/$$1/,DEFAULT'
+      # Lab topic defaults
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    volumes:
+      - ./certs:/etc/kafka/secrets:ro
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.7.1
+    hostname: kafka-2
+    container_name: kafka-2
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+      KAFKA_LISTENERS: 'SSL://0.0.0.0:9092,SSL_HOST://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'SSL://kafka-2:9092,SSL_HOST://localhost:29092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:SSL,SSL:SSL,SSL_HOST:SSL'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'SSL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_SSL_KEYSTORE_FILENAME: 'kafka-2.keystore.p12'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: 'credentials'
+      KAFKA_SSL_KEY_CREDENTIALS: 'credentials'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: 'kafka.truststore.p12'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: 'credentials'
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_AUTHORIZER_CLASS_NAME: 'org.apache.kafka.metadata.authorizer.StandardAuthorizer'
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
+      KAFKA_SUPER_USERS: 'User:broker;User:admin'
+      KAFKA_SSL_PRINCIPAL_MAPPING_RULES: 'RULE:^CN=([a-zA-Z0-9.-]*).*$$/$$1/,DEFAULT'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    volumes:
+      - ./certs:/etc/kafka/secrets:ro
+
+  kafka-3:
+    image: confluentinc/cp-kafka:7.7.1
+    hostname: kafka-3
+    container_name: kafka-3
+    ports:
+      - "39092:39092"
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+      KAFKA_LISTENERS: 'SSL://0.0.0.0:9092,SSL_HOST://0.0.0.0:39092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'SSL://kafka-3:9092,SSL_HOST://localhost:39092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:SSL,SSL:SSL,SSL_HOST:SSL'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'SSL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_SSL_KEYSTORE_FILENAME: 'kafka-3.keystore.p12'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: 'credentials'
+      KAFKA_SSL_KEY_CREDENTIALS: 'credentials'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: 'kafka.truststore.p12'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: 'credentials'
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_AUTHORIZER_CLASS_NAME: 'org.apache.kafka.metadata.authorizer.StandardAuthorizer'
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
+      KAFKA_SUPER_USERS: 'User:broker;User:admin'
+      KAFKA_SSL_PRINCIPAL_MAPPING_RULES: 'RULE:^CN=([a-zA-Z0-9.-]*).*$$/$$1/,DEFAULT'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    volumes:
+      - ./certs:/etc/kafka/secrets:ro
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.7.1
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: 'https://0.0.0.0:8081'
+      SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL: 'https'
+      # HTTPS Listener TLS Config (Server side)
+      SCHEMA_REGISTRY_SSL_KEYSTORE_LOCATION: '/etc/kafka/secrets/schema-registry.keystore.p12'
+      SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD: 'changeit'
+      SCHEMA_REGISTRY_SSL_KEY_PASSWORD: 'changeit'
+      SCHEMA_REGISTRY_SSL_KEYSTORE_TYPE: 'PKCS12'
+      SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION: '/etc/kafka/secrets/kafka.truststore.p12'
+      SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD: 'changeit'
+      SCHEMA_REGISTRY_SSL_TRUSTSTORE_TYPE: 'PKCS12'
+      # Kafka Store Client mTLS Config (Connecting to Brokers as User:schema-registry)
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'SSL://kafka-1:9092,SSL://kafka-2:9092,SSL://kafka-3:9092'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: 'SSL'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: '/etc/kafka/secrets/schema-registry.keystore.p12'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: 'changeit'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEY_PASSWORD: 'changeit'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_TYPE: 'PKCS12'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_LOCATION: '/etc/kafka/secrets/kafka.truststore.p12'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_PASSWORD: 'changeit'
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_TYPE: 'PKCS12'
+    volumes:
+      - ./certs:/etc/kafka/secrets:ro

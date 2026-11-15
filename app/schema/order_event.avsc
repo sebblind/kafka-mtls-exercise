@@ -1,0 +1,12 @@
+{
+  "namespace": "com.kafkalab.avro",
+  "type": "record",
+  "name": "OrderEvent",
+  "fields": [
+    {"name": "order_id", "type": "string"},
+    {"name": "customer_id", "type": "string"},
+    {"name": "item", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "timestamp", "type": "string"}
+  ]
+}

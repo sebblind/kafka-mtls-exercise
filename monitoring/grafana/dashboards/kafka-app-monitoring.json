@@ -1,0 +1,188 @@
+{
+  "uid": "kafka-mtls-app",
+  "title": "Kafka mTLS Application Monitoring (Duplicates, Warnings & Errors)",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total Consumed (Avro)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "expr": "kafka_app_messages_consumed_total", "refId": "A" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Unique Messages",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        { "expr": "kafka_app_unique_messages_total", "refId": "A" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Duplicates Detected",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        { "expr": "kafka_app_duplicate_messages_total", "refId": "A" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Duplicate Ratio (%)",
+      "type": "gauge",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 20 },
+              { "color": "red", "value": 50 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        { "expr": "kafka_app_duplicate_percentage", "refId": "A" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "App Warnings (30m)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        { "expr": "sum(count_over_time({job=\"kafka-app\", level=\"WARNING\"}[30m]))", "refId": "A" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "App Errors (30m)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        { "expr": "sum(count_over_time({job=\"kafka-app\", level=\"ERROR\"}[30m]))", "refId": "A" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Warnings & Errors Over Time (by App & Level)",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "expr": "sum by (level, app) (count_over_time({job=\"kafka-app\", level=~\"WARNING|ERROR\"}[1m]))",
+          "legendFormat": "{{app}} - {{level}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Consumed vs. Duplicate Messages Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "expr": "kafka_app_messages_consumed_total", "legendFormat": "Total Consumed", "refId": "A" },
+        { "expr": "kafka_app_unique_messages_total", "legendFormat": "Unique Messages", "refId": "B" },
+        { "expr": "kafka_app_duplicate_messages_total", "legendFormat": "Duplicates Detected", "refId": "C" }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Application Warnings & Errors Log Stream (Live)",
+      "type": "logs",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 11 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending"
+      },
+      "targets": [
+        { "expr": "{job=\"kafka-app\", level=~\"WARNING|ERROR\"}", "refId": "A" }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "All Application Logs (Producer & Consumer)",
+      "type": "logs",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending"
+      },
+      "targets": [
+        { "expr": "{job=\"kafka-app\"}", "refId": "A" }
+      ]
+    }
+  ]
+}
