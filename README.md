@@ -170,3 +170,8 @@ docker compose stop
 # Full teardown (removes containers and volumes)
 docker compose down -v
 ```
+
+## 8 . End of day
+```bash
+gcloud compute instances stop kafka-lab-vm --zone=europe-north1-a
+```
